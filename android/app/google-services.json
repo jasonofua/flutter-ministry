@@ -1,0 +1,114 @@
+{
+  "project_info": {
+    "project_number": "818900997561",
+    "firebase_url": "https://grantie-2b757.firebaseio.com",
+    "project_id": "grantie-2b757",
+    "storage_bucket": "grantie-2b757.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818900997561:android:84ed7e076b9c582b",
+        "android_client_info": {
+          "package_name": "com.fumstobil.didl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818900997561-4fsalgof2rce56413oe4i8jhfghr0cn3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDe5zkTIfUBzUGxExBXqOtm1az2vcalg_U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818900997561-4fsalgof2rce56413oe4i8jhfghr0cn3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818900997561:android:8d64ff8ae5095260",
+        "android_client_info": {
+          "package_name": "com.primedsoft.salvation_ministries_library"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818900997561-5svett3e3j0qmjtcp58atnb73qj3bof9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.primedsoft.salvation_ministries_library",
+            "certificate_hash": "33a30d5c8ee6a528e46624b574ef7bf071011434"
+          }
+        },
+        {
+          "client_id": "818900997561-4fsalgof2rce56413oe4i8jhfghr0cn3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDe5zkTIfUBzUGxExBXqOtm1az2vcalg_U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818900997561-4fsalgof2rce56413oe4i8jhfghr0cn3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818900997561:android:86dd7b86186fb7d5",
+        "android_client_info": {
+          "package_name": "primedsoft.com.dicl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818900997561-09u4ccuvjjimbue1cc6mra3uugrn1o0p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "primedsoft.com.dicl",
+            "certificate_hash": "7b39e6f3d213a301e31d6c009353c53e4365ffc0"
+          }
+        },
+        {
+          "client_id": "818900997561-4fsalgof2rce56413oe4i8jhfghr0cn3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDe5zkTIfUBzUGxExBXqOtm1az2vcalg_U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818900997561-4fsalgof2rce56413oe4i8jhfghr0cn3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
