@@ -497,7 +497,7 @@ class SearchScreenState extends State<SearchScreen> {
                           width: 0.0,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Column(
+                            child: Row(
                               children: <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),

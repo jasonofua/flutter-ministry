@@ -12,6 +12,7 @@ abstract class BaseAuth {
   Future<void> putUserDetailsInDb(User user);
 
   Future<void> putMessageInDb(BoughtMessages user, String uid);
+  Future<void> buyMessage(BoughtMessages user, String uid);
   Future<void> removeMessageInDb(String user, String uid);
 
   Future<String> getUserid();
@@ -68,6 +69,19 @@ class Auth implements BaseAuth {
 //    Map<String, dynamic> map = new Map();
 //    map["Users"] = user;
     return firebaseDatabase.reference().child("Downloaded Messages").child(uid).child(user.key).set(
+        user.toMap());
+  }
+
+
+  @override
+  Future<void> buyMessage(BoughtMessages user,String uid) async {
+    FirebaseDatabase firebaseDatabase = new FirebaseDatabase(
+        app: FirebaseDatabase.instance.app,
+        databaseURL: "https://grantie-2b757.firebaseio.com/");
+    print("Firebase Link ******** " + firebaseDatabase.databaseURL +
+        " ******** ");
+
+    return firebaseDatabase.reference().child("BoughtMessages").child(uid).child(user.key).set(
         user.toMap());
   }
 

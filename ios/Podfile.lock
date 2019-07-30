@@ -128,7 +128,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
-  - Flutter (from `.symlinks/flutter/ios`)
+  - Flutter (from `.symlinks/flutter/ios-release`)
   - flutter_country_picker (from `.symlinks/plugins/flutter_country_picker/ios`)
   - flutter_pdf_viewer (from `.symlinks/plugins/flutter_pdf_viewer/ios`)
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
@@ -175,7 +175,7 @@ EXTERNAL SOURCES:
   firebase_storage:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: ".symlinks/flutter/ios-release"
   flutter_country_picker:
     :path: ".symlinks/plugins/flutter_country_picker/ios"
   flutter_pdf_viewer:
@@ -237,6 +237,6 @@ SPEC CHECKSUMS:
   video_player: 3964090a33353060ed7f58aa6427c7b4b208ec21
   webview_flutter: 1aa7604e6cdb451a9b7ed2c37d5454c0b440246b
 
-PODFILE CHECKSUM: 6e5c4c289c73d9b566af63d2b3a8c34ea46e15ed
+PODFILE CHECKSUM: ad0e4e72cff85a37c1d18908fb12f12d3f980e4a
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.7.1

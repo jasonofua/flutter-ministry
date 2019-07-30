@@ -50,7 +50,7 @@ class CompleteState extends State<Complete> {
           Color progressBarColor: Colors.blueAccent,
           Color textColor: Colors.blue}) =>
       showDialog(
-          barrierDismissible: false,
+          barrierDismissible: true,
           context: context,
           builder: (context) => Theme(
               data: Theme.of(context).copyWith(primaryColor: Colors.pink),
