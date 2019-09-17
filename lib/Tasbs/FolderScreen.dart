@@ -235,6 +235,61 @@ class FolderScreenState extends State<FolderScreen> {
     final FirebaseUser user = await FirebaseAuth.instance.currentUser();
     uid = user.uid;
     print(uid);
+    print("fethed");
+    _database
+        .reference()
+        .child("BoughtMessages")
+        .child(uid)
+        .onChildAdded
+        .listen(_childAdded);
+    _database
+        .reference()
+        .child("BoughtMessages")
+        .child(uid)
+        .onChildRemoved
+        .listen(_childRemoves);
+    _database
+        .reference()
+        .child("BoughtMessages")
+        .child(uid)
+        .onChildChanged
+        .listen(_childChanged);
+
+
+    _databaseDownloaded
+        .reference()
+        .child("Downloaded Messages")
+        .child(uid)
+        .onChildAdded
+        .listen(_childAddedDownloaded);
+    _databaseDownloaded
+        .reference()
+        .child("Downloaded Messages")
+        .child(uid)
+        .onChildRemoved
+        .listen(_childRemovesDownloaded);
+    _databaseDownloaded
+        .reference()
+        .child("Downloaded Messages")
+        .child(uid)
+        .onChildChanged
+        .listen(_childChangedDownloaded);
+
+    messages = FirebaseDatabase.instance
+        .reference()
+        .child("BoughtMessages")
+        .child(uid);
+
+    _databaseNew
+        .reference()
+        .child("BoughtMessages")
+        .child(uid);
+
+
+    downloaded = FirebaseDatabase.instance
+        .reference()
+        .child("Downloaded Messages")
+        .child(uid);
 
     // here you write the codes to input the data into firestore
   }
@@ -301,6 +356,7 @@ class FolderScreenState extends State<FolderScreen> {
           .child(uid);
 
       print(uid);
+      print("yae" + uid);
     } else {
       getUid();
       print("scam" + uid);

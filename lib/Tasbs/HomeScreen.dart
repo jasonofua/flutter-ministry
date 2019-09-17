@@ -3,18 +3,17 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:salvation_ministries_library/Auth/auth.dart';
 import 'package:salvation_ministries_library/Model/Message.dart';
 import 'package:salvation_ministries_library/Activities/MessagesList.dart';
 import 'package:salvation_ministries_library/Activities/NewMessage.dart';
 import 'package:salvation_ministries_library/Activities/Ebook.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:salvation_ministries_library/Model/BoughtMessages.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:xml/xml.dart' as xml;
+
+import '../Model/BoughtMessages.dart';
+import '../Model/User.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -25,15 +24,18 @@ class HomeScreenState extends State<HomeScreen> {
   List<Message> list = new List();
   final myController = TextEditingController();
   var _database;
+  var _userDatabase;
   String _code = "";
   String uid = "";
   String connected = "";
   BaseAuth auth;
+  User userD;
 
   void getUid() async {
     final FirebaseUser user = await FirebaseAuth.instance.currentUser();
     uid = user.uid;
     print(uid);
+    userD = await auth.returnAUserDetail(uid);
 
     // here you write the codes to input the data into firestore
   }
@@ -59,6 +61,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     if (myString != null || myString != "") {
       uid = myString;
+      userD = await auth.returnAUserDetail(uid);
 
     } else {
       getUid();
@@ -73,7 +76,9 @@ class HomeScreenState extends State<HomeScreen> {
     FirebaseDatabase(app: FirebaseDatabase.instance.app);
     database.setPersistenceEnabled(true);
     database.setPersistenceCacheSizeBytes(10000000);
+    FirebaseDatabase.instance.setPersistenceEnabled(true);
     _database = FirebaseDatabase.instance.reference();
+    _database = FirebaseDatabase.instance.reference().child("Users");
     auth = new Auth();
     isInternetConnected();
     super.initState();
@@ -109,17 +114,14 @@ class HomeScreenState extends State<HomeScreen> {
                               itemCount: map.values.toList().length,
                               itemBuilder: (BuildContext ctxt, int index) {
                                 var type = "";
-                                var currency = "";
+
                                 var my_color_variable = Colors.blue;
 
-                                if (map.values.toList()[index]["currency"] ==
-                                    "naira") {
-                                  currency =
-                                  "Buy USD ${map.values.toList()[index]["priceDollar"]}";
-                                } else {
-                                  currency =
-                                  "Buy NGN ${map.values.toList()[index]["priceNaira"]}";
-                                }
+                                String currency = map.values.toList()[index]
+                                ["points"].toString();
+
+                                String amount = "${currency} points";
+
                                 if (map.values.toList()[index]["type"] == "Audio") {
                                   type = 'Audio';
                                   my_color_variable = Colors.blue;
@@ -193,187 +195,62 @@ class HomeScreenState extends State<HomeScreen> {
                                             ),
                                             OutlineButton(
                                               child: new Text(
-                                                currency,
+                                                amount,
                                                 style: TextStyle(
                                                     color: Color(0xff3a3b54),
                                                     fontSize: 15.0,
                                                     fontWeight: FontWeight.bold),
                                               ),
                                               onPressed: () {
+                                                int amt = map.values.toList()[index]["points"];
 
-                                                String title = map.values.toList()[index]["title"];
-                                                String editedTitle = title.replaceAll(' ', '%20');
+                                                if (amt > userD.wallet){
+                                                  Fluttertoast.showToast(
+                                                      msg: "Insufficient fund.. please fund account",
+                                                      toastLength: Toast.LENGTH_SHORT,
+                                                      gravity: ToastGravity.CENTER,
+                                                      timeInSecForIos: 2,
+                                                      backgroundColor: Colors.red,
+                                                      textColor: Colors.white,
+                                                      fontSize: 16.0
+                                                  );
+                                                }else{
+                                                  int newAmount = userD.wallet - amt;
 
-                                                if (map.values.toList()[index]["currency"] ==
-                                                    "naira") {
-                                                  var one = int.parse(map.values.toList()[index]["priceDollar"]);
-                                                  var two = one * 100;
-                                                  launch('https://www.smhos.org/knowledgeios/index.php?itemname=${editedTitle}&itemsdescription=Paying%20for%20a%20message&amount=${two}&currency=USD');
+                                                  Fluttertoast.showToast(
+                                                      msg: "Getting your message..please wait",
+                                                      toastLength: Toast.LENGTH_SHORT,
+                                                      gravity: ToastGravity.CENTER,
+                                                      timeInSecForIos: 2,
+                                                      backgroundColor: Colors.green,
+                                                      textColor: Colors.white,
+                                                      fontSize: 16.0);
 
-                                                } else {
-                                                  var one = int.parse(map.values.toList()[index]["priceNaira"]);
-                                                  var two = one * 100;
-                                                  launch('https://www.smhos.org/knowledgeios/index.php?itemname=${editedTitle}&itemsdescription=Paying%20for%20a%20message&amount=${two}&currency=NGN');
+
+                                                  BoughtMessages bought = new BoughtMessages(map.values.toList()[index]["title"], map.values.toList()[index]["imageUrl"], map.values.toList()[index]["downloadUrl"], type, map.values.toList()[index]["exetension"], map.values.toList()[index]["key"]);
+                                                  auth.buyMessage(bought, uid).whenComplete(() async {
+
+                                                    auth.updateUserAmount(uid, newAmount).whenComplete(() async {
+                                                      Fluttertoast.showToast(
+                                                          msg: "Message Bought",
+                                                          toastLength: Toast.LENGTH_SHORT,
+                                                          gravity: ToastGravity.CENTER,
+                                                          timeInSecForIos: 5,
+                                                          backgroundColor: Colors.green,
+                                                          textColor: Colors.white,
+                                                          fontSize: 16.0);
+
+                                                    });
+                                                  }) ;
                                                 }
+
 
                                               },
                                               borderSide:
                                               BorderSide(color: Colors.amber),
                                               shape: StadiumBorder(),
                                             ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.only(top: 8.0,right: 10.0),
-                                                  child: Container(
-                                                    width: 130.0,
-                                                    height: 35.0,
-                                                    child: TextField(
 
-                                                      onChanged: (text) {
-                                                        if(text.length < 8)
-                                                          print('Code must be more than 8 charater');
-                                                        else
-                                                          _code = text;
-                                                      },
-                                                      keyboardType: TextInputType.multiline,
-                                                      decoration: InputDecoration(
-                                                          border: new OutlineInputBorder(
-                                                            borderRadius:
-                                                            new BorderRadius
-                                                                .circular(25.0),
-                                                            borderSide:
-                                                            new BorderSide(
-                                                              color: Color(0xff3a3b54),
-                                                            ),
-                                                          ),
-                                                          hintText:
-                                                          "Code",hintStyle: TextStyle(fontSize: 12.0)),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(top: 8.0,left: 10.0),
-                                                  child: Container(
-                                                    width: 100.0,
-                                                    child: OutlineButton(
-                                                      child: new Text(
-                                                        "Get Message",
-                                                        style: TextStyle(
-                                                            color: Color(0xff3a3b54),
-                                                            fontSize: 10.0,
-                                                            fontWeight:
-                                                            FontWeight.bold),
-                                                      ),
-                                                      onPressed: () {
-                                                        if(_code.contains('K')){
-                                                          _database.child('BoughtKeys').child(uid).once().then((DataSnapshot snapshot) {
-                                                            //  print('Data : ${snapshot.value}');
-
-                                                            if(snapshot.value != null){
-                                                              Map<dynamic, dynamic> fridgesDs = snapshot.value;
-                                                              fridgesDs.forEach((key, value) {
-                                                                if (value.toString() == _code) {
-                                                                  Fluttertoast.showToast(
-                                                                      msg: "Code already used by you",
-                                                                      toastLength: Toast.LENGTH_LONG,
-                                                                      gravity: ToastGravity.CENTER,
-                                                                      timeInSecForIos: 3,
-                                                                      backgroundColor: Colors.red,
-                                                                      textColor: Colors.white,
-                                                                      fontSize: 16.0);
-                                                                }else{
-                                                                  Fluttertoast.showToast(
-                                                                      msg: "Getting Message..please wait",
-                                                                      toastLength: Toast.LENGTH_SHORT,
-                                                                      gravity: ToastGravity.CENTER,
-                                                                      timeInSecForIos: 2,
-                                                                      backgroundColor: Colors.green,
-                                                                      textColor: Colors.white,
-                                                                      fontSize: 16.0);
-
-                                                                  String title = map.values.toList()[index]["title"];
-                                                                  String imageUrl = map.values.toList()[index]["imageUrl"];
-                                                                  String downloadUrl = map.values.toList()[index]["downloadUrl"];
-                                                                  String extension = map.values.toList()[index]["exetension"];
-                                                                  String key = map.values.toList()[index]["key"];
-
-
-                                                                  BoughtMessages bought = new BoughtMessages(title, imageUrl, downloadUrl, type, extension, key);
-                                                                  print(bought);
-                                                                  auth.buyMessage(bought, uid).whenComplete(() async {
-                                                                    Fluttertoast.showToast(
-                                                                        msg: "Message Bought, you can get view it at the Directory Tab ",
-                                                                        toastLength: Toast.LENGTH_SHORT,
-                                                                        gravity: ToastGravity.CENTER,
-                                                                        timeInSecForIos: 5,
-                                                                        backgroundColor: Colors.green,
-                                                                        textColor: Colors.white,
-                                                                        fontSize: 16.0);
-
-                                                                  }) ;
-                                                                }
-                                                              });
-
-                                                            }else{
-                                                              _database.child('BoughtKeys').child(uid).set({
-                                                                '$_code': _code,
-                                                              });
-
-                                                              Fluttertoast.showToast(
-                                                                  msg: "Getting Message..please wait",
-                                                                  toastLength: Toast.LENGTH_SHORT,
-                                                                  gravity: ToastGravity.CENTER,
-                                                                  timeInSecForIos: 2,
-                                                                  backgroundColor: Colors.green,
-                                                                  textColor: Colors.white,
-                                                                  fontSize: 16.0);
-
-                                                              String title = map.values.toList()[index]["title"];
-                                                              String imageUrl = map.values.toList()[index]["imageUrl"];
-                                                              String downloadUrl = map.values.toList()[index]["downloadUrl"];
-                                                              String extension = map.values.toList()[index]["exetension"];
-                                                              String key = map.values.toList()[index]["key"];
-
-
-                                                              BoughtMessages bought = new BoughtMessages(title, imageUrl, downloadUrl, type, extension, key);
-                                                              print(bought);
-                                                              auth.buyMessage(bought, uid).whenComplete(() async {
-                                                                Fluttertoast.showToast(
-                                                                    msg: "Message Bought, you can get view it at the Directory Tab",
-                                                                    toastLength: Toast.LENGTH_SHORT,
-                                                                    gravity: ToastGravity.CENTER,
-                                                                    timeInSecForIos: 5,
-                                                                    backgroundColor: Colors.green,
-                                                                    textColor: Colors.white,
-                                                                    fontSize: 16.0);
-
-                                                              }) ;
-                                                            }
-                                                          });
-
-                                                        }else{
-                                                          Fluttertoast.showToast(
-                                                              msg: "Code invalid",
-                                                              toastLength: Toast.LENGTH_SHORT,
-                                                              gravity: ToastGravity.CENTER,
-                                                              timeInSecForIos: 5,
-                                                              backgroundColor: Colors.green,
-                                                              textColor: Colors.white,
-                                                              fontSize: 16.0);
-                                                        }
-
-                                                      },
-                                                      borderSide: BorderSide(
-                                                          color: Colors.amber),
-                                                      shape: StadiumBorder(),
-                                                    ),
-                                                  ),
-                                                ),
-
-                                              ],
-                                            )
                                           ],
                                         ),
                                         buttons: [

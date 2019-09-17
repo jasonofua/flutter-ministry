@@ -121,7 +121,8 @@ class CompleteState extends State<Complete> {
           region: _region,
           imageUrl: _imageUrl,
           currency: _currency,
-          status: "user");
+          status: "user",
+          wallet: 0);
 
       if (widget.value != null) {
         auth.putUserDetailsInDb(user).whenComplete(() async {

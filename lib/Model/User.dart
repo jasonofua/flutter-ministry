@@ -11,6 +11,8 @@ class User{
       currency,
       status;
 
+  int wallet;
+
   User(
       {
         this.id,
@@ -20,7 +22,8 @@ class User{
         this.region,
         this.imageUrl,
         this.currency,
-        this.status});
+        this.status,
+        this.wallet});
 
   Map<String, dynamic> toMap() => {
     "id":id,
@@ -30,7 +33,8 @@ class User{
     "region": region,
     "mImageUrl": imageUrl,
     "currency": currency,
-    "status": status
+    "status": status,
+    "wallet": wallet
   };
 
   User.map(dynamic obj) {
@@ -42,6 +46,7 @@ class User{
     this.currency = obj["currency"];
     this.title = obj["title"];
     this.status = obj["status"];
+    this.wallet = obj["wallet"];
   }
 
   User.fromSnapshot(DataSnapshot snapshot) {
@@ -53,6 +58,7 @@ class User{
     currency = snapshot.value["currency"];
     title = snapshot.value["title"];
     status = snapshot.value["status"];
+    wallet = snapshot.value["wallet"];
   }
 
 

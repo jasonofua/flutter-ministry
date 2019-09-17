@@ -14,6 +14,7 @@ abstract class BaseAuth {
   Future<void> putMessageInDb(BoughtMessages user, String uid);
   Future<void> buyMessage(BoughtMessages user, String uid);
   Future<void> removeMessageInDb(String user, String uid);
+  Future<void> updateUserAmount(String user, int amt);
 
   Future<String> getUserid();
 
@@ -70,6 +71,20 @@ class Auth implements BaseAuth {
 //    map["Users"] = user;
     return firebaseDatabase.reference().child("Downloaded Messages").child(uid).child(user.key).set(
         user.toMap());
+  }
+
+  @override
+  Future<void> updateUserAmount(String user,int amt) async {
+    FirebaseDatabase firebaseDatabase = new FirebaseDatabase(
+        app: FirebaseDatabase.instance.app,
+        databaseURL: "https://grantie-2b757.firebaseio.com/");
+    print("Firebase Link ******** " + firebaseDatabase.databaseURL +
+        " ******** ");
+//    firebaseDatabase.reference().child("Users").push().set(user);
+//    Map<String, dynamic> map = new Map();
+//    map["Users"] = user;
+    return firebaseDatabase.reference().child("Users").child(user).child("wallet").set(
+        amt);
   }
 
 
