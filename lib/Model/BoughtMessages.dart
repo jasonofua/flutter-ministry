@@ -9,11 +9,11 @@ class BoughtMessages {
   String key;
 
   static const KEY = "key";
-  static const TITLE = "title";
-  static const DOWNLOAD = "downloadUrl";
+  static const TITLE = "messageTitle";
+  static const DOWNLOAD = "messageDownloadUrl";
   static const TYPE = "type";
   static const EXTENSION = "extension";
-  static const IMAGEURL = "imageUrl";
+  static const IMAGEURL = "messageImageUrl";
   BoughtMessages(this.title,this.imageUrl,this.downloadUrl,this.type,this.extension,this.key);
 
   BoughtMessages.fromSnapshot(DataSnapshot snap){
